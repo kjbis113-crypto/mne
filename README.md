@@ -23,4 +23,4 @@ Before customer launch, submit one clearly labelled test order, verify its priva
 
 English uses locally installed FK Roman Standard Trial Light only for local design review; no trial font is redistributed. Public visitors currently use Georgia. Replace the local-only `MNE Roman` font face with a licensed Light WOFF2 before publishing FK Roman universally. Pretendard Variable is included under its accompanying SIL OFL license.
 
-English line-height is 112.5%, Korean 120% (25% below the previous values). Korean type remains 84% of the paired English size. Every line within each heading uses one size. Supplied MNÉ logo and campaign photography are retained.
+English line-height is 129.375%, Korean 138% (15% above the compact revision). Korean type remains 84% of the paired English size. Every line within each heading uses one size. Supplied MNÉ logo and campaign photography are retained.

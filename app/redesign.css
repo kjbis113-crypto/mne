@@ -22,8 +22,8 @@ body{font-family:var(--serif);font-weight:300;font-synthesis:none;line-height:1.
 @media(prefers-reduced-motion:reduce){.compass-flight{display:none}}
 .pair{--type:20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(18px,2.5vw,40px);text-align:left;width:100%}
 .mne-experience .pair{display:grid}
-.pair>[lang=en]{font:300 var(--type)/1.125 var(--serif);letter-spacing:-.03em;white-space:pre-line;overflow-wrap:anywhere;min-width:0}
-.pair>[lang=ko]{font:400 calc(var(--type)*.84)/1.2 var(--sans);letter-spacing:-.04em;white-space:pre-line;word-break:keep-all;overflow-wrap:anywhere;min-width:0}
+.pair>[lang=en]{font:300 var(--type)/1.29375 var(--serif);letter-spacing:-.03em;white-space:pre-line;overflow-wrap:anywhere;min-width:0}
+.pair>[lang=ko]{font:400 calc(var(--type)*.84)/1.38 var(--sans);letter-spacing:-.04em;white-space:pre-line;word-break:keep-all;overflow-wrap:anywhere;min-width:0}
 .hero-caption{width:390px}.hero-caption .pair{--type:20px}.hero-compass-control{width:min(52vw,63svh,560px);top:48%}.hero-compass-control>.dial{width:100%}.hero-compass-control>span{margin-top:-35px}
 .intro-copy{max-width:none;width:min(820px,74vw);margin:0 9vw 90px auto}.intro-copy>.eyebrow{--type:16px}.intro-copy p .pair{--type:24px;border-top:2px solid currentColor;padding-top:22px}
 .dial-rotator svg{filter:blur(.17px)}

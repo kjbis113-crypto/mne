@@ -20,10 +20,10 @@ test('order page retains the intake while omitting the home hero', () => {
   assert.doesNotMatch(html, /id="home"/);
 });
 
-test('type rules reduce leading by 25% and retain Korean optical scale', async () => {
+test('type rules increase compact leading by 15% and retain Korean optical scale', async () => {
   const css = await readFile(new URL('../app/redesign.css', import.meta.url), 'utf8');
-  assert.match(css, /var\(--type\)\/1\.125/);
-  assert.match(css, /calc\(var\(--type\)\*\.84\)\/1\.2/);
+  assert.match(css, /var\(--type\)\/1\.29375/);
+  assert.match(css, /calc\(var\(--type\)\*\.84\)\/1\.38/);
   assert.doesNotMatch(css, /offset-line/);
   assert.match(css, /--rule:2px/);
 });
