@@ -2,7 +2,9 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { makeOrderDraft, NOTE_VALUES, PROCESS_STEPS, type OrderDraft } from "./order-contract";
 import {Dial} from './dial';
-export function Pair({en,ko,className=''}:{en:string;ko:string;className?:string}){return <span className={'pair '+className}><span lang="en">{en.replace(/\\n/g, "\n")}</span><span lang="ko">{ko.replace(/\\n/g, "\n")}</span></span>;}
+import {Arrow, inlineArrows} from './arrow';
+import {ArchitecturalBackground} from './architectural-background';
+export function Pair({en,ko,className=''}:{en:string;ko:string;className?:string}){return <span className={'pair '+className}><span lang="en">{inlineArrows(en)}</span><span lang="ko">{inlineArrows(ko)}</span></span>;}
 const notes=[
   {en:'Fruity',ko:'프루티',description:'The brightness of fruit. A vivid, sweet impression.',translation:'과일의 생기와 선명하고 달콤한 인상.'},
   {en:'Floral',ko:'플로럴',description:'Soft petals, sunlit linen, a fleeting tenderness.',translation:'부드러운 꽃잎과 햇살을 머금은 리넨, 스쳐 가는 다정함.'},
@@ -22,12 +24,10 @@ const errors:Record<string,string>={
   'Choose a JPG, PNG, WebP or GIF image.':'JPG, PNG, WebP 또는 GIF 이미지를 선택해 주세요.',
   'Please choose an image smaller than 4 MB.':'4MB 이하의 이미지를 선택해 주세요.',
   'Bring a photograph and a few words before continuing.':'사진과 기억에 대한 짧은 글을 먼저 입력해 주세요.',
-  'Add a photograph or an existing photo link.':'사진을 올리거나 기존 사진 링크를 입력해 주세요.',
+  'Add a photograph.':'사진을 올려 주세요.',
   'Add a few words about your memory.':'기억에 대한 짧은 글을 입력해 주세요.',
   'Add your name and a contact detail to prepare your order.':'주문을 준비하려면 이름과 연락처를 입력해 주세요.',
-  'The photo link must use HTTPS.':'사진 링크는 HTTPS 주소여야 합니다.',
-  'Enter a valid HTTPS photo link, or leave it blank for now.':'올바른 HTTPS 사진 링크를 입력하거나 비워 두세요.',
-  'Upload your own photograph or add its existing link. The sample image is for preview only.':'내 사진을 올리거나 사진 링크를 입력해 주세요. 예시 이미지는 미리보기 전용입니다.',
+  'Upload your own photograph. The sample image is for preview only.':'내 사진을 올려 주세요. 예시 이미지는 미리보기 전용입니다.',
   'We could not confirm the sheet entry. Retry with this same order reference to avoid a duplicate.':'접수 여부를 확인하지 못했습니다. 중복 접수를 막기 위해 같은 주문 번호로 다시 시도해 주세요.',
   'Please wait a minute before trying again.':'잠시 기다린 뒤 다시 시도해 주세요.',
 };
@@ -62,7 +62,7 @@ function jump(id:string) {document.getElementById(id)?.scrollIntoView({behavior:
 export default function Home({orderPage=false}:{orderPage?:boolean}) {
   const [family,setFamily]=useState(0),[bearing,setBearing]=useState(0);
   const [photo,setPhoto]=useState(""),[memory,setMemory]=useState(""),[error,setError]=useState("");
-  const [customerName,setCustomerName]=useState(""),[contact,setContact]=useState(""),[photoLink,setPhotoLink]=useState("");
+  const [customerName,setCustomerName]=useState(""),[contact,setContact]=useState("");
   const [draft,setDraft]=useState<OrderDraft|null>(null);
   const [photoFile,setPhotoFile]=useState<File|null>(null),[connected,setConnected]=useState(false),[submitting,setSubmitting]=useState(false);
   const [receipt,setReceipt]=useState<{orderNumber:string;receivedAt:string}|null>(null),[submitError,setSubmitError]=useState("");
@@ -112,7 +112,7 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
     if(detail!==null){dialog.current?.showModal();dialog.current?.scrollTo(0,0);}
     else dialog.current?.close();
   },[detail]);
-  useEffect(()=>{setDraft(null);setReceipt(null);setSubmitError("");orderNumber.current="";},[photo,memory,family,customerName,contact,photoLink]);
+  useEffect(()=>{setDraft(null);setReceipt(null);setSubmitError("");orderNumber.current="";},[photo,memory,family,customerName,contact]);
   function chooseImage(file?:File){
     if(!file)return;
     if(!["image/jpeg","image/png","image/webp","image/gif"].includes(file.type)){setError("Choose a JPG, PNG, WebP or GIF image.");return;}
@@ -120,15 +120,15 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
     const url=URL.createObjectURL(file);urls.current.push(url);setPhoto(url);setPhotoFile(file);setError("");setDraft(null);
   }
   function example(){setPhoto("/campaign-sea-postcard.png");setPhotoFile(null);setMemory("Salt in the evening air. A candle flickering beside a photograph of the sea, and the quiet feeling of being far from home.");setError("");setDraft(null);}
-  function next(){if((!photo&&!photoLink)||!memory.trim()){setError("Bring a photograph and a few words before continuing.");return;}setError("");jump("scent");}
+  function next(){if(!photo||!memory.trim()){setError("Bring a photograph and a few words before continuing.");return;}setError("");jump("scent");}
   function prepareOrder(){
-    if(!photo&&!photoLink){setError("Add a photograph or an existing photo link.");jump("memory");return;}
-    try{setDraft(makeOrderDraft({photoLink,description:memory,preferredNote:recipe.name,customerName,contact}));setError("");jump("candle");}
+    if(!photo){setError("Add a photograph.");jump("memory");return;}
+    try{setDraft(makeOrderDraft({photoLink:"",description:memory,preferredNote:recipe.name,customerName,contact}));setError("");jump("candle");}
     catch(cause){setError(cause instanceof Error?cause.message:"Check your order details.");jump("memory");}
   }
   async function submitOrder(){
     if(!draft||!connected||submitting||receipt)return;
-    if(!photoFile&&!photoLink){setSubmitError("Upload your own photograph or add its existing link. The sample image is for preview only.");return;}
+    if(!photoFile){setSubmitError("Upload your own photograph. The sample image is for preview only.");return;}
     setSubmitting(true);setSubmitError("");
     orderNumber.current ||= 'MNE-'+crypto.randomUUID();
     const form=new FormData();
@@ -139,6 +139,7 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
     finally{setSubmitting(false);}
   }
   return <main ref={root} className={"mne-experience chapter-"+chapter+(orderPage?" dedicated-order":"")}>
+    <ArchitecturalBackground/>
     <div className="paper-grain" aria-hidden="true"/><a href={orderPage?"/":"#home"} className="fixed-brand" aria-label="MNÉ home / 홈"><span className="brand-logo"><img src="/mne-brand-logo.png" width="2481" height="3508" alt="MNÉ" draggable={false}/></span></a>
     <nav className="fixed-nav" aria-label="Main navigation"><a href={orderPage?"/#archive":"#archive"}><Pair en="Memories" ko="기억들"/></a><a href="#memory"><Pair en="Create" ko="향 만들기"/></a><a href={orderPage?"/#about":"#about"}><Pair en="About" ko="소개"/></a><button className="nav-compass" aria-label={"Next chapter: "+bearings[bearing].title} onClick={()=>jump(bearings[bearing].key)}><CompassMark angle={bearing*90}/></button></nav>
     <span className="page-location"><Pair en={chapter==="home"?"Scroll to explore ↓":chapter==="scent"?"Drag to find your direction":chapter.toUpperCase()+" / MNÉ"} ko={chapter==="home"?"아래로 스크롤 ↓":chapter==="scent"?"돌려서 향의 방향 찾기":({about:"소개",memory:"기억",candle:"향초",archive:"아카이브",return:"다시, 기억으로"} as Record<string,string>)[chapter]+" / MNÉ"}/></span>
@@ -179,11 +180,9 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
           <div className="order-fields">
             <label htmlFor="customer-name"><Pair en="Your name" ko="이름"/></label><input id="customer-name" autoComplete="name" value={customerName} onChange={e=>setCustomerName(e.target.value)} placeholder="Name / 이름" aria-required="true"/>
             <label htmlFor="customer-contact"><Pair en="Email or phone" ko="이메일 또는 전화번호"/></label><input id="customer-contact" value={contact} onChange={e=>setContact(e.target.value)} placeholder="Email or phone / 이메일 또는 전화번호" aria-required="true"/>
-            <label htmlFor="photo-link"><Pair en="Existing photo link" ko="기존 사진 링크"/></label><input id="photo-link" type="url" value={photoLink} onChange={e=>setPhotoLink(e.target.value)} placeholder="https://drive.google.com/…"/>
-            <p className="fine-print"><Pair en="Use an existing HTTPS photo link, or upload a photograph. We do not change your Drive sharing permissions." ko="HTTPS 링크를 입력하거나 사진을 올려 주세요. Drive 공유 설정은 변경하지 않습니다."/></p>
           </div>
           {error&&<p role="alert" className="field-error"><Pair en={error} ko={errors[error]||"입력 내용을 확인한 뒤 다시 시도해 주세요."}/></p>}
-          <button className="text-link" onClick={next}><Pair en="Find its direction" ko="향의 방향 찾기"/><i>↗</i></button>
+          <button className="text-link" onClick={next}><Pair en="Find its direction" ko="향의 방향 찾기"/><i><Arrow/></i></button>
           <p className="fine-print"><Pair en={connected?"Nothing is sent until you submit your order.":"The connection is unavailable. Your details stay in this tab."} ko={connected?"주문 접수 전에는 정보가 전송되지 않습니다.":"현재 접수 연결을 사용할 수 없습니다. 입력한 정보는 이 탭에만 남아 있습니다."}/></p>
         </div>
       </div>
@@ -203,7 +202,7 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
         <div className="scent-action">
           <label className="note-select-label" htmlFor="preferred-note"><Pair en="Preferred note" ko="선호 향 계열"/></label>
           <select id="preferred-note" value={recipe.name} onChange={e=>setFamily(families.findIndex(f=>f.name===e.target.value))}>{NOTE_VALUES.map((note,i)=><option key={note} value={note}>{note} / {notes[i].ko}</option>)}</select>
-          <button className="text-link" onClick={prepareOrder}><Pair en="Review my order" ko="주문 확인하기"/><i>↗</i></button>
+          <button className="text-link" onClick={prepareOrder}><Pair en="Review my order" ko="주문 확인하기"/><i><Arrow/></i></button>
           <p className="fine-print"><Pair en="Your preference guides MSE. It is not a finished recipe." ko="선호 향 계열은 분석의 방향을 정하는 정보이며, 완성된 향 배합은 아닙니다."/></p>
         </div>
       </div>
@@ -215,11 +214,11 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
         <span className="draft-label"><Pair en={receipt?"Order recorded / awaiting analysis":draft?"Order draft / not submitted":"Your order / not yet prepared"} ko={receipt?"주문 접수됨 / 분석 대기":draft?"주문 초안 / 미접수":"주문 정보 / 입력 전"}/></span>
         <h3><Pair en={draft?"A moment, ready to review.":"A memory has more than one direction."} ko={draft?"주문 정보를 확인해 주세요.":"하나의 기억, 여러 향의 방향."}/></h3>
         <p><Pair en={receipt?"Your order is recorded. MSE fragrance analysis is not connected yet.":draft?"Review your details before submitting your order.":"Share your photograph, your words, and a preferred note. Three scent strips will help you choose a fragrance."} ko={receipt?"주문이 접수되었습니다. MSE 향 분석 기능은 아직 연결되지 않았습니다.":draft?"주문을 접수하기 전에 입력한 정보를 확인해 주세요.":"사진과 짧은 글, 선호하는 향 계열을 알려 주세요. 세 가지 시향지를 경험하고 향을 고르게 됩니다."}/></p>
-        {draft&&<><dl className="order-summary"><div><dt><Pair en="Preferred note" ko="선호 향 계열"/></dt><dd><Pair en={recipe.name} ko={notes[family].ko}/></dd></div><div><dt><Pair en="Customer" ko="이름"/></dt><dd>{draft["주문자"]}</dd></div><div><dt><Pair en="Contact" ko="연락처"/></dt><dd>{draft["연락처"]}</dd></div><div><dt><Pair en="Photo" ko="사진"/></dt><dd><Pair en={receipt?(photoFile?"Saved privately in Drive":"Photo link recorded"):photoFile?"Ready to upload":photoLink?"Photo link provided":"Sample preview only"} ko={receipt?(photoFile?"Drive에 비공개로 저장됨":"사진 링크 기록됨"):photoFile?"업로드 준비됨":photoLink?"사진 링크 입력됨":"미리보기용 예시 사진"}/></dd></div><div><dt><Pair en="Memory" ko="기억"/></dt><dd className="original-memory">{draft["설명텍스트"]}</dd></div></dl><p className="fine-print"><Pair en={receipt?"MNÉ manages processing and recipe IDs separately.":"This draft has not been submitted. A receipt is issued after confirmed submission."} ko={receipt?"진행 상태와 향 배합 번호는 MNÉ가 별도로 관리합니다.":"이 초안은 아직 접수되지 않았습니다. 접수가 확인되면 주문 번호가 발급됩니다."}/></p></>}
+        {draft&&<><dl className="order-summary"><div><dt><Pair en="Preferred note" ko="선호 향 계열"/></dt><dd><Pair en={recipe.name} ko={notes[family].ko}/></dd></div><div><dt><Pair en="Customer" ko="이름"/></dt><dd>{draft["주문자"]}</dd></div><div><dt><Pair en="Contact" ko="연락처"/></dt><dd>{draft["연락처"]}</dd></div><div><dt><Pair en="Photo" ko="사진"/></dt><dd><Pair en={receipt?"Saved privately in Drive":photoFile?"Ready to upload":"Sample preview only"} ko={receipt?"Drive에 비공개로 저장됨":photoFile?"업로드 준비됨":"미리보기용 예시 사진"}/></dd></div><div><dt><Pair en="Memory" ko="기억"/></dt><dd className="original-memory">{draft["설명텍스트"]}</dd></div></dl><p className="fine-print"><Pair en={receipt?"MNÉ manages processing and recipe IDs separately.":"This draft has not been submitted. A receipt is issued after confirmed submission."} ko={receipt?"진행 상태와 향 배합 번호는 MNÉ가 별도로 관리합니다.":"이 초안은 아직 접수되지 않았습니다. 접수가 확인되면 주문 번호가 발급됩니다."}/></p></>}
         {receipt&&<p role="status" className="order-receipt"><Pair en="Order recorded" ko="주문 접수됨"/><span>{receipt.orderNumber}</span><Pair en={"Received "+new Date(receipt.receivedAt).toLocaleString("en-GB",{timeZone:"Asia/Seoul"})+" (KST)"} ko={"접수 "+new Date(receipt.receivedAt).toLocaleString("ko-KR",{timeZone:"Asia/Seoul"})}/></p>}
-        {draft&&!receipt&&<><button className="text-link" disabled={!connected||submitting} onClick={submitOrder}><Pair en={submitting?"Recording your order…":connected?"Submit to MNÉ":"Connection unavailable"} ko={submitting?"주문 접수 중…":connected?"MNÉ에 주문 접수하기":"현재 접수 연결 불가"}/> <i>↗</i></button><p className="fine-print"><Pair en="Submitting sends your name, contact details, memory, preferred note and photo/link to MNÉ’s private order sheet and Drive. They are never added to the public archive." ko="접수하면 이름, 연락처, 기억, 선호 향 계열과 사진 또는 링크가 MNÉ의 비공개 주문 시트와 Drive에 저장됩니다. 아카이브에는 공개되지 않습니다."/></p></>}
+        {draft&&!receipt&&<><button className="text-link" disabled={!connected||submitting} onClick={submitOrder}><Pair en={submitting?"Recording your order…":connected?"Submit to MNÉ":"Connection unavailable"} ko={submitting?"주문 접수 중…":connected?"MNÉ에 주문 접수하기":"현재 접수 연결 불가"}/> <i><Arrow/></i></button><p className="fine-print"><Pair en="Submitting sends your name, contact details, memory, preferred note and photo to MNÉ’s private order sheet and Drive. They are never added to the public archive." ko="접수하면 이름, 연락처, 기억, 선호 향 계열과 사진이 MNÉ의 비공개 주문 시트와 Drive에 저장됩니다. 아카이브에는 공개되지 않습니다."/></p></>}
         {submitError&&<p role="alert" className="field-error"><Pair en={submitError} ko={errors[submitError]||"접수하지 못했습니다. 입력 내용을 확인한 뒤 다시 시도해 주세요."}/></p>}
-        <button className="text-link" disabled={submitting} onClick={()=>jump("memory")}><Pair en={draft?"Edit order details":"Bring a memory"} ko={draft?"주문 정보 수정하기":"기억 가져오기"}/> <i>↗</i></button>
+        <button className="text-link" disabled={submitting} onClick={()=>jump("memory")}><Pair en={draft?"Edit order details":"Bring a memory"} ko={draft?"주문 정보 수정하기":"기억 가져오기"}/> <i><Arrow/></i></button>
       </div>
       <div className="candidate-grid" aria-label="Three MSE candidate slots">{["A","B","C"].map(letter=><article key={letter}><span><Pair en={"Candidate "+letter} ko={"후보 향 "+letter}/></span><strong>{letter}</strong><h3><Pair en="Awaiting MSE" ko="향 분석 대기 중"/></h3><p><Pair en="No fragrance formula or recipe ID has been returned." ko="아직 향 배합 결과나 배합 번호가 없습니다."/></p><button disabled aria-label={"Candidate "+letter+" is not available yet"}><Pair en="Available after analysis" ko="분석 후 확인 가능"/></button></article>)}</div>
       <div className="journey-heading"><span><Pair en="FROM YOUR MEMORY TO YOUR CANDLE" ko="기억이 향초가 되는 과정"/></span><p><Pair en="What happens after a real order is received." ko="주문 접수 후의 과정입니다."/></p></div>
@@ -240,14 +239,14 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
       <p className="archive-caption section-pad"><Pair en="Illustrative scent stories. Private order details are never added to this archive." ko="향을 상상해 보는 예시 이야기입니다. 개인 주문 정보는 이 아카이브에 공개되지 않습니다."/></p>
     </section>
 
-    <section data-chapter="return" className="closing-section section-pad"><span><Pair en="WHAT STAYS WITH YOU?" ko="당신에게 남아 있는 것은?"/></span><button className="closing-link" onClick={()=>jump("memory")}><Pair en={"Find your\nway back."} ko={"기억으로\n돌아가요."} className="heading-line"/><i>↗</i></button><div className="closing-meta"><p><Pair en={"Send your photograph.\nReceive your scent."} ko={"사진을 보내 주세요.\n당신의 향을 전해 드립니다."}/></p><a href={orderPage?"/":"#home"}><Pair en="BACK TO THE BEGINNING ↑" ko="처음으로 ↑"/></a></div></section>
+    <section data-chapter="return" className="closing-section section-pad"><span><Pair en="WHAT STAYS WITH YOU?" ko="당신에게 남아 있는 것은?"/></span><button className="closing-link" onClick={()=>jump("memory")}><Pair en={"Find your\nway back."} ko={"기억으로\n돌아가요."} className="heading-line"/><i><Arrow/></i></button><div className="closing-meta"><p><Pair en={"Send your photograph.\nReceive your scent."} ko={"사진을 보내 주세요.\n당신의 향을 전해 드립니다."}/></p><a href={orderPage?"/":"#home"}><Pair en="BACK TO THE BEGINNING ↑" ko="처음으로 ↑"/></a></div></section>
 
     <dialog ref={dialog} className="memory-detail" aria-labelledby="detail-title" onCancel={()=>setDetail(null)} onClose={()=>setDetail(null)}>
       {selected&&<article style={{"--detail-color":selected.family==="Fresh"?"#cbdce0":selected.family==="Floral"?"#e4d8d4":selected.family==="Fruity"?"#decdb2":"#d5d6c8"} as CSSProperties}>
         <header><Pair en={"MNÉ / Memory "+String((detail??0)+1).padStart(2,"0")} ko={"MNÉ / 기억 "+String((detail??0)+1).padStart(2,"0")}/><button autoFocus onClick={()=>setDetail(null)}><Pair en="Close ×" ko="닫기 ×"/></button></header>
         <div className="detail-marquee"><h2 id="detail-title"><Pair en={selected.title} ko={memories[detail??0].titleKo}/></h2><div aria-hidden="true">{selected.title} — {memories[detail??0].titleKo}</div></div>
         <div className="detail-body"><div className="detail-info"><Pair className="eyebrow" en={selected.place+" / "+selected.family} ko={memories[detail??0].placeKo+" / "+notes[memories[detail??0].family].ko}/><p><Pair en={selected.memory} ko={memories[detail??0].ko}/></p><Pair className="detail-notes" en={selected.notes} ko={memories[detail??0].notesKo}/></div><div className="detail-image">{selected.image?<img src={selected.image} alt={selected.title}/>:<span>{selected.family.slice(0,1)}<sup>°</sup></span>}</div></div>
-        <button className="next-memory" onClick={()=>{setDetail(v=>((v??0)+1)%records.length);}}><Pair en="Next memory" ko="다음 기억"/><span>↗</span></button>
+        <button className="next-memory" onClick={()=>{setDetail(v=>((v??0)+1)%records.length);}}><Pair en="Next memory" ko="다음 기억"/><span><Arrow/></span></button>
       </article>}
     </dialog>
   </main>;

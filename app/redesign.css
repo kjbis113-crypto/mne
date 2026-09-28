@@ -61,6 +61,16 @@ body{font-family:var(--serif);font-weight:300;font-synthesis:none;line-height:1.
 @media(max-width:600px){.fixed-brand .brand-logo{width:88px}}
 
 /* A shared baseline and type size for every line of a bilingual heading. */
+.ui-arrow{display:inline-block;width:1em;height:1em;vertical-align:-.1em;flex:none;overflow:visible}
+.mne-experience{position:relative;isolation:isolate}
+.architectural-backdrop{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;mix-blend-mode:multiply}
+.architecture-layer,.architecture-print{position:absolute;inset:0}
+.architecture-print{height:100svh;opacity:.52;mask-image:linear-gradient(to bottom,transparent,#000 18%,#000 78%,transparent);-webkit-mask-image:linear-gradient(to bottom,transparent,#000 18%,#000 78%,transparent);will-change:transform,opacity,filter}
+.architecture-print img{width:100%;height:100%;object-fit:cover;object-position:center;user-select:none}
+.architecture-echo{opacity:0}
+.mne-experience .hero-scroll,.mne-experience .hero-stage,.mne-experience .scent-section{background:transparent!important}
+@media(max-width:600px){.architecture-print img{object-position:48% center}.architectural-backdrop{opacity:.72}}
+@media(prefers-reduced-motion:reduce){.architecture-print{will-change:auto;filter:none!important}.architecture-echo{display:none}}
 .section-heading h2,.archive-heading h2,.closing-link{line-height:1;margin-block-end:0}
 .heading-line>[lang]{text-wrap:pretty}
 .candle-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6vw}
