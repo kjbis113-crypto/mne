@@ -225,7 +225,7 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
       <ol className="order-journey">{PROCESS_STEPS.map((step,i)=><li key={step.value}><span>0{i+1}</span><div><h4><Pair en={step.label} ko={step.value}/></h4><p><Pair en={step.description} ko={processKo[i]}/></p></div></li>)}</ol>
       <div className="candle-grid">
         <div className="candle-copy" data-reveal><span><Pair en="AFTER YOUR SELECTION / MNÉ" ko="향 선택 후 / MNÉ"/></span><h3><Pair en={"One scent.\nEntirely yours."} ko={"오롯이\n당신만의 향."}/></h3><p><Pair en="Explore three scent strips, choose one fragrance, and receive your finished candle. Recipe IDs come from MSE, not from your order number." ko="세 가지 시향지를 경험하고 향 하나를 고르면, 그 향으로 완성한 향초를 보내 드립니다. 향 배합 번호와 주문 번호는 서로 다릅니다."/></p><p className="fine-print"><Pair en="The order sheet specifies that identical photo, text and preferred-note inputs return the same MSE recipe ID." ko="같은 사진, 글, 선호 향 계열을 입력하면 같은 MSE 향 배합 번호가 반환되도록 설계되어 있습니다."/></p></div>
-        <div className="candle-visual" data-reveal data-parallax><div className="product-photo"><img src="/mne-product-kakao.png" alt="Lit black MNÉ candle with a kraft label, beside flowers and a perfume bottle"/></div><span><Pair en="MEMORY, MADE TANGIBLE." ko="손에 잡히는 기억."/></span></div>
+        <div className="candle-visual" data-reveal data-parallax><div className="product-photo"><img src="/mne-product-tin.png" alt="Silver MNÉ candle tin with a paper label, beside flowers and a perfume bottle"/></div><span><Pair en="MEMORY, MADE TANGIBLE." ko="손에 잡히는 기억."/></span></div>
       </div>
     </section>
 
