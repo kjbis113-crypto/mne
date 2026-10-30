@@ -1,6 +1,6 @@
 # MNÉ
 
-Bilingual candle experience, built with React + Vite and a private Google Sheets order receiver through Netlify Functions.
+Korean-language candle experience, built with React + Vite and a private Google Sheets order receiver through Netlify Functions.
 
 ## Local development
 
@@ -15,12 +15,14 @@ Set `MNE_ORDER_WEBHOOK_URL` to the existing Google Apps Script `/exec` deploymen
 
 `GET /api/orders` reports configuration availability, not a completed delivery test. The API validates same-origin submissions, limits payloads, applies Netlify per-IP rate limiting and preserves the order reference across retries. Google Apps Script owns deduplication and writes order text as rich text to prevent formula injection. Customer data and uploaded photos remain private; the public archive is illustrative content only.
 
-Photos are limited to 4 MiB to allow multipart and Base64 overhead within Netlify's binary request limit. Existing HTTPS photo links are also supported.
+Photos are limited to 4 MiB to allow multipart and Base64 overhead within Netlify's binary request limit. The intake uses file upload only; it does not show a duplicate photo URL field.
 
 Before customer launch, submit one clearly labelled test order, verify its private spreadsheet row and photo, then retry the same reference to verify deduplication. MSE fragrance analysis is a separate integration and is not connected by this project.
 
 ## Typography and assets
 
-English uses locally installed FK Roman Standard Trial Light only for local design review; no trial font is redistributed. Public visitors currently use Georgia. Replace the local-only `MNE Roman` font face with a licensed Light WOFF2 before publishing FK Roman universally. Pretendard Variable is included under its accompanying SIL OFL license.
+The active design system is `app/editorial.css`. Korean copy uses self-hosted Pretendard Variable under its accompanying SIL OFL license. Visitors do not need to install a font. No trial fonts are redistributed. Legacy stylesheet files are retained but are not imported.
 
-English line-height is 129.375%, Korean 138% (15% above the compact revision). Korean type remains 84% of the paired English size. Every line within each heading uses one size. Supplied MNÉ logo and campaign photography are retained.
+Copy is Korean-only; the legacy `Pair` component renders just its Korean text. Decorative section labels, duplicate translations, ordinals and empty analysis cards are removed. Body copy uses 160% leading, headings 124%, with a responsive scale and 20–48px outer gutters. The measured references (Arpa Studios and Köppen) informed the compact navigation, image-led hero, clear type hierarchy and consistent archive grid; their assets are not copied.
+
+Supplied MNÉ logo, photography, scroll-responsive architectural prints, SVG arrows and the compass camera interaction are retained. Reduced-motion preferences are respected. API payloads and private order handling are unchanged by the visual redesign.

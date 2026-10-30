@@ -3,7 +3,7 @@ import {useEffect,useRef,useState,type CSSProperties} from 'react';
 import {createPortal} from 'react-dom';
 
 const wrap=(n:number)=>(n%360+360)%360;
-export function Dial({value,labels,onChange,onPoint,destination,label='Rotate the compass / 나침반 돌리기'}:{value:number;labels:readonly string[];onChange:(n:number)=>void;onPoint?:()=>void;destination?:string;label?:string}) {
+export function Dial({value,labels,onChange,onPoint,destination,label='나침반 돌리기'}:{value:number;labels:readonly string[];onChange:(n:number)=>void;onPoint?:()=>void;destination?:string;label?:string}) {
   const step=360/labels.length;
   const [angle,setAngle]=useState(value*step+17),[dragging,setDragging]=useState(false),[leaving,setLeaving]=useState(false);
   const [ray,setRay]=useState<{x:number;y:number;angle:number;length:number;endX:number;endY:number}|null>(null);
@@ -67,7 +67,7 @@ export function Dial({value,labels,onChange,onPoint,destination,label='Rotate th
         <path d="M164 42v43" className="dial-north"/>
       </svg>
     </div>
-    {(onPoint||destination)&&<div className="dial-pointer-orbit" style={{transform:`rotate(${angle}deg)`}}><button className="dial-pointer" aria-label="Follow this direction to your order / 이 방향으로 주문하러 가기" disabled={leaving} onClick={e=>launch(e.currentTarget)}><span/></button></div>}
+    {(onPoint||destination)&&<div className="dial-pointer-orbit" style={{transform:`rotate(${angle}deg)`}}><button className="dial-pointer" aria-label="이 방향으로 주문하러 가기" disabled={leaving} onClick={e=>launch(e.currentTarget)}><span/></button></div>}
     {ray&&createPortal(<div className="compass-flight" aria-hidden="true"><div className="flight-paper"/><div className="flight-camera" ref={camera}><div className="compass-ray" style={{left:ray.x,top:ray.y,width:ray.length,transform:`rotate(${ray.angle}deg)`} as CSSProperties}><i/></div><div className="flight-destination" style={{left:ray.endX,top:ray.endY}}><span style={{transform:`rotate(${ray.angle+90}deg)`}}/></div></div></div>,document.body)}
   </div>;
 }
