@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-const prints = ['/architecture-01.png', '/architecture-02.png', '/architecture-03.png'];
+const prints = ['/campaign-20261105-01.webp', '/campaign-20261105-04.webp', '/campaign-20261105-06.webp'];
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
 
 export function printFrame(progress: number, index: number, reduced = false) {

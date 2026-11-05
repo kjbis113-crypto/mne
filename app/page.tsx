@@ -14,11 +14,11 @@ const notes=[
   {en:'Balsamic',ko:'발사믹',description:'Resinous warmth, quiet depth, a lingering softness.',translation:'수지의 따뜻함과 고요한 깊이, 은은하게 남는 부드러움.'},
 ];
 const memories=[
-  {title:'A window left open',titleKo:'열어 둔 창',place:'Seoul',placeKo:'서울',family:3,description:'Cold rain entering a warm room. The quiet scent of cedar shelves and paper.',ko:'따뜻한 방 안으로 스며드는 찬 비. 삼나무 책장과 종이에서 번지는 고요한 향.',notes:'Wet stone · cedar · paper',notesKo:'젖은 돌 · 삼나무 · 종이',image:'/campaign-mountain-road.png'},
-  {title:'The last ferry',titleKo:'마지막 배',place:'Busan',placeKo:'부산',family:2,description:'Salt caught in a wool coat at dusk. We stayed on deck until the lights disappeared.',ko:'해 질 무렵, 모직 코트에 밴 소금기. 불빛이 사라질 때까지 우리는 갑판에 남아 있었다.',notes:'Sea salt · iris · musk',notesKo:'바다 소금 · 아이리스 · 머스크',image:'/campaign-sea-postcard.png'},
-  {title:'Summer, 4:13 pm',titleKo:'여름, 오후 4시 13분',place:'Daegu',placeKo:'대구',family:0,description:'A peach split open above hot pavement. Nothing planned for the rest of the day.',ko:'뜨거운 보도 위에서 반으로 가른 복숭아. 남은 하루에는 아무 계획도 없었다.',notes:'White peach · hay · amber',notesKo:'백도 · 마른 풀 · 앰버',image:'/campaign-desert-postcard.png'},
-  {title:'My mother’s drawer',titleKo:'엄마의 서랍',place:'Jeonju',placeKo:'전주',family:1,description:'Pressed linen and the powder left behind. A small drawer that held an entire childhood.',ko:'반듯하게 다린 리넨과 남아 있던 분 냄새. 어린 시절을 고스란히 담고 있던 작은 서랍.',notes:'Violet · cotton · orris',notesKo:'바이올렛 · 코튼 · 아이리스 뿌리',image:'/campaign-mountain-mist.png'},
-  {title:'Mountain after dark',titleKo:'어둠이 내린 산',place:'Pyeongchang',placeKo:'평창',family:3,description:'Pine resin on our hands, smoke in our hair. The last light through the trees.',ko:'손에 묻은 송진, 머리카락에 밴 연기. 나무 사이로 스며들던 마지막 빛.',notes:'Pine · smoke · oakmoss',notesKo:'소나무 · 스모크 · 오크모스',image:'/campaign-mountain-road.png'},
+  {title:'A window left open',titleKo:'열어 둔 창',place:'Seoul',placeKo:'서울',family:3,description:'Cold rain entering a warm room. The quiet scent of cedar shelves and paper.',ko:'따뜻한 방 안으로 스며드는 찬 비. 삼나무 책장과 종이에서 번지는 고요한 향.',notes:'Wet stone · cedar · paper',notesKo:'젖은 돌 · 삼나무 · 종이',image:'/campaign-20261105-02.webp'},
+  {title:'The last ferry',titleKo:'마지막 배',place:'Busan',placeKo:'부산',family:2,description:'Salt caught in a wool coat at dusk. We stayed on deck until the lights disappeared.',ko:'해 질 무렵, 모직 코트에 밴 소금기. 불빛이 사라질 때까지 우리는 갑판에 남아 있었다.',notes:'Sea salt · iris · musk',notesKo:'바다 소금 · 아이리스 · 머스크',image:'/campaign-20261105-06.webp'},
+  {title:'Summer, 4:13 pm',titleKo:'여름, 오후 4시 13분',place:'Daegu',placeKo:'대구',family:0,description:'A peach split open above hot pavement. Nothing planned for the rest of the day.',ko:'뜨거운 보도 위에서 반으로 가른 복숭아. 남은 하루에는 아무 계획도 없었다.',notes:'White peach · hay · amber',notesKo:'백도 · 마른 풀 · 앰버',image:'/campaign-20261105-05.webp'},
+  {title:'My mother’s drawer',titleKo:'엄마의 서랍',place:'Jeonju',placeKo:'전주',family:1,description:'Pressed linen and the powder left behind. A small drawer that held an entire childhood.',ko:'반듯하게 다린 리넨과 남아 있던 분 냄새. 어린 시절을 고스란히 담고 있던 작은 서랍.',notes:'Violet · cotton · orris',notesKo:'바이올렛 · 코튼 · 아이리스 뿌리',image:'/campaign-20261105-04.webp'},
+  {title:'Mountain after dark',titleKo:'어둠이 내린 산',place:'Pyeongchang',placeKo:'평창',family:3,description:'Pine resin on our hands, smoke in our hair. The last light through the trees.',ko:'손에 묻은 송진, 머리카락에 밴 연기. 나무 사이로 스며들던 마지막 빛.',notes:'Pine · smoke · oakmoss',notesKo:'소나무 · 스모크 · 오크모스',image:'/campaign-20261105-02.webp'},
 ];
 const processKo=['주문 정보가 접수됩니다.','향 분석을 통해 세 가지 후보 향과 배합 번호가 정해집니다.','세 가지 향의 시향지를 준비합니다.','시향지를 받아 각 향을 경험해 보세요.','원하는 향 하나를 선택합니다. 선택한 번호는 주문 비고에 기록됩니다.','선택한 향으로 완성한 향초를 보내 드립니다.','당신의 기억이 하나의 향초가 됩니다.'];
 const errors:Record<string,string>={
@@ -64,7 +64,7 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
   const [photoFile,setPhotoFile]=useState<File|null>(null),[connected,setConnected]=useState(false),[submitting,setSubmitting]=useState(false);
   const [receipt,setReceipt]=useState<{orderNumber:string;receivedAt:string}|null>(null),[submitError,setSubmitError]=useState("");
   const orderNumber=useRef("");
-  const [records]=useState<MemoryRecord[]>(()=>samples.map((r,i)=>({...r,image:["/campaign-mountain-road.png","/campaign-sea-postcard.png","/campaign-desert-postcard.png","/campaign-mountain-mist.png","/campaign-mountain-road.png"][i]})));
+  const [records]=useState<MemoryRecord[]>(()=>samples.map((r,i)=>({...r,image:["/campaign-20261105-01.webp","/campaign-20261105-06.webp","/campaign-20261105-05.webp","/campaign-20261105-04.webp","/campaign-20261105-02.webp"][i]})));
   const [detail,setDetail]=useState<number|null>(null),[chapter,setChapter]=useState("home");
   const root=useRef<HTMLElement>(null),input=useRef<HTMLInputElement>(null),dialog=useRef<HTMLDialogElement>(null);
   const urls=useRef<string[]>([]);
@@ -116,7 +116,7 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
     if(file.size>4*1024*1024){setError("Please choose an image smaller than 4 MB.");return;}
     const url=URL.createObjectURL(file);urls.current.push(url);setPhoto(url);setPhotoFile(file);setError("");setDraft(null);
   }
-  function example(){setPhoto("/campaign-sea-postcard.png");setPhotoFile(null);setMemory("저녁 공기에 섞인 소금기. 바다 사진 곁에서 일렁이던 촛불, 집에서 멀리 떠나왔다는 고요한 기분.");setError("");setDraft(null);}
+  function example(){setPhoto("/campaign-20261105-06.webp");setPhotoFile(null);setMemory("저녁 공기에 섞인 소금기. 바다 사진 곁에서 일렁이던 촛불, 집에서 멀리 떠나왔다는 고요한 기분.");setError("");setDraft(null);}
   function next(){if(!photo||!memory.trim()){setError("Bring a photograph and a few words before continuing.");return;}setError("");jump("scent");}
   function prepareOrder(){
     if(!photo){setError("Add a photograph.");jump("memory");return;}
@@ -150,7 +150,7 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
     {!orderPage&&<><section id="home" data-chapter="home" className="hero-scroll">
       <section className="hero-stage">
         <div className="hero-editorial">
-          <img className="hero-photograph" src="/campaign-mountain-mist.png" alt="안개 낀 산을 바라보며 피운 촛불" fetchPriority="high"/>
+          <img className="hero-photograph" src="/campaign-20261105-07.webp" alt="바위 위에 놓인 은색 MNÉ 향초" fetchPriority="high"/>
           <div className="hero-story">
             <h1><Pair en={"A fragrance\nby memory."} ko={"기억으로\n태어난 향."}/></h1>
             <p><Pair en="A place fades. A feeling stays. Turn a moment you remember into a scent of your own." ko="장소는 흐려져도 감정은 남습니다. 간직한 한순간을 당신만의 향으로 만들어 보세요."/></p>
@@ -183,7 +183,7 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
         <div className="memory-photo-column" data-reveal data-parallax>
           <input ref={input} type="file" hidden accept="image/jpeg,image/png,image/webp,image/gif" onChange={e=>chooseImage(e.target.files?.[0])}/>
           <button className={"photo-input "+(photo?"has-photo":"")}  onClick={()=>input.current?.click()} onDragOver={e=>e.preventDefault()} onDrop={e=>{e.preventDefault();chooseImage(e.dataTransfer.files[0]);}}>
-            <img src={photo||"/campaign-sea-postcard.png"} alt={photo?"내가 올린 기억의 사진":"바다 사진 위에 놓인 향초"}/>
+            <img src={photo||"/campaign-20261105-06.webp"} alt={photo?"내가 올린 기억의 사진":"밝은 바위 위에 놓인 MNÉ 향초"}/>
             <span className="photo-action"><Pair en={photo?"Change photograph":"Bring your photograph"} ko={photo?"사진 바꾸기":"사진 가져오기"}/><i>+</i></span>
           </button>
           <div className="photo-meta"><span>JPG · PNG · WebP · GIF / 최대 4MB</span></div>
@@ -224,7 +224,7 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
     <section id="candle" data-chapter="candle" className="candle-section section-pad">
       <div className="section-heading" data-reveal><h2><Pair en={"Find the one\nthat takes you back."} ko={"당신을 그때로\n데려다주는 향."} className="heading-line"/></h2></div>
       <div className="candle-grid">
-        <div className="candle-visual" data-reveal><div className="product-photo"><img src="/mne-product-tin.png" alt="꽃과 향수병 곁에 놓인 은색 MNÉ 향초" loading="lazy"/></div></div>
+        <div className="candle-visual" data-reveal><div className="product-photo"><img src="/campaign-20261105-03.webp" alt="마른 잎 아래 놓인 은색 MNÉ 향초" loading="lazy"/></div></div>
         <div className="candle-copy" data-reveal><h3><Pair en={"One scent.\nEntirely yours."} ko={"오롯이\n당신만의 향."}/></h3><p><Pair en="Explore three scent strips. Choose the one that feels like your memory. We turn it into a candle, made for you." ko="세 가지 시향지를 경험하고, 당신의 기억과 가장 가까운 향을 골라 주세요. 그 향을 당신만의 향초로 완성합니다."/></p><div className="product-spec"><span>90 g / 3.1 oz</span><span>국내 수작업 제작</span></div><button className="text-link" onClick={()=>jump('memory')}><Pair en="Create your candle" ko="나만의 향초 만들기"/><i><Arrow/></i></button></div>
       </div>
       {(orderPage||draft)&&<div id="order-review" className="order-review">

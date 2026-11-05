@@ -50,8 +50,8 @@ test('public page metadata is Korean', async () => {
 
 test('supplied background prints keep their sequence and fade with scroll', () => {
   const html = renderToStaticMarkup(<Home />);
-  assert.ok(html.indexOf('/architecture-01.png') < html.indexOf('/architecture-02.png'));
-  assert.ok(html.indexOf('/architecture-02.png') < html.indexOf('/architecture-03.png'));
+  assert.ok(html.indexOf('/campaign-20261105-01.webp') < html.indexOf('/campaign-20261105-04.webp'));
+  assert.ok(html.indexOf('/campaign-20261105-04.webp') < html.indexOf('/campaign-20261105-06.webp'));
   assert.ok(printFrame(.7, 0).blur > printFrame(0, 0).blur);
   assert.ok(printFrame(.7, 0).opacity < printFrame(0, 0).opacity);
   assert.equal(printFrame(1.2, 0).opacity, 0);
