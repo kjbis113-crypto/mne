@@ -73,6 +73,10 @@ h1 .pair > [lang=ko],h2 .pair > [lang=ko],h3 .pair > [lang=ko],h4 .pair > [lang=
 .hero-editorial { position: relative; min-height: 630px; color: #fffdf6; overflow: hidden; background: #354b58; }
 .hero-editorial::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg,#111d2820 15%,#111d2805 40%,#101d2ad9 100%); pointer-events: none; }
 .hero-photograph { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 55% 70%; }
+.hero-film-toggle { position: absolute; z-index: 2; top: 20px; right: 20px; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid #fff9; border-radius: 50%; color: #fffdf6; background: #101d2a40; cursor: pointer; }
+.hero-film-toggle svg { width: 18px; height: 18px; }
+.hero-film-toggle:hover { background: #101d2a80; }
+.hero-film-toggle:focus-visible { outline: 2px solid #fffdf6; outline-offset: 4px; }
 .hero-image-meta { position: absolute; top: 25px; inset-inline: var(--gutter); z-index: 1; display: flex; justify-content: space-between; gap: 16px; font-size: 10px; letter-spacing: .08em; }
 .hero-story { position: absolute; z-index: 1; bottom: 35px; inset-inline: var(--gutter); }
 .hero-story h1 .pair { --type: clamp(44px,4.3vw,64px); }

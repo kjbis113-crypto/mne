@@ -4,6 +4,7 @@ import { makeOrderDraft, NOTE_VALUES, PROCESS_STEPS, type OrderDraft } from "./o
 import {Dial} from './dial';
 import {Arrow, inlineArrows} from './arrow';
 import {ArchitecturalBackground} from './architectural-background';
+import {HeroFilm} from './hero-film';
 // Keep the existing copy contract, but present one Korean text block only.
 export function Pair({ko,className=''}:{en:string;ko:string;className?:string}){return <span className={'pair '+className}><span lang="ko">{inlineArrows(ko)}</span></span>;}
 const notes=[
@@ -150,7 +151,7 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
     {!orderPage&&<><section id="home" data-chapter="home" className="hero-scroll">
       <section className="hero-stage">
         <div className="hero-editorial">
-          <img className="hero-photograph" src="/campaign-20261105-07.webp" alt="바위 위에 놓인 은색 MNÉ 향초" fetchPriority="high"/>
+          <HeroFilm/>
           <div className="hero-story">
             <h1><Pair en={"A fragrance\nby memory."} ko={"기억으로\n태어난 향."}/></h1>
             <p><Pair en="A place fades. A feeling stays. Turn a moment you remember into a scent of your own." ko="장소는 흐려져도 감정은 남습니다. 간직한 한순간을 당신만의 향으로 만들어 보세요."/></p>
