@@ -18,7 +18,7 @@ test('Korean copy never renders English pairs or escaped newline markers', () =>
 test('order page retains the intake while omitting the home hero', () => {
   const html = renderToStaticMarkup(<Home orderPage />);
   assert.match(html, /id="memory"/);
-  assert.match(html, /id="customer-name"/);
+  assert.match(html, /id="commerce-name"/);
   assert.doesNotMatch(html, /id="home"/);
 });
 

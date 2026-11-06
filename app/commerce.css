@@ -1,0 +1,86 @@
+/* Order details use the same quiet type and rules as the editorial site. */
+.commerce-flow { max-width: 860px; margin: 56px auto 0; padding: 34px 0 0; border-top: 1px solid var(--ink); scroll-margin-top: 110px; text-align: left; }
+.commerce-heading { margin-bottom: 30px; }
+.commerce-kicker { display: block; font-size: 12px; color: var(--muted); letter-spacing: .03em; margin-bottom: 12px; }
+.commerce-step-title { font-size: clamp(23px, 2.3vw, 32px); font-weight: 400; line-height: 1.35; letter-spacing: -.035em; }
+.commerce-step-title:focus { outline: none; }
+.commerce-field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.commerce-flow label,.commerce-shipping > label { display: block; font-size: 14px; }
+.commerce-flow input:not([type=checkbox]),.commerce-route-page input { display: block; width: 100%; min-width: 0; min-height: 48px; padding: 12px 0; border: 0; border-bottom: 1px solid var(--line); background: transparent; font-size: 16px; }
+.commerce-flow input::placeholder { color: #7a7d73; font-size: 14px; }
+.commerce-flow input:focus { border-bottom-color: var(--ink); }
+.commerce-inclusion { font-size: 13px; color: var(--muted); margin: 26px 0 16px; }
+.commerce-resume { margin-bottom: 24px; padding: 14px 16px; background: #e7e6dc; font-size: 13px; line-height: 1.7; }
+.commerce-resume a { text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+.commerce-primary { display: flex; justify-content: space-between; align-items: center; gap: 24px; width: 100%; min-height: 56px; padding: 16px 22px; color: var(--paper); background: var(--ink); font-size: 16px; text-align: left; line-height: 1.4; }
+.commerce-primary:hover:not(:disabled) { background: #3c473d; }
+.commerce-flow button:disabled,.commerce-route-page button:disabled { opacity: .45; cursor: not-allowed; }
+.commerce-primary .ui-arrow { font-size: 22px; }
+.commerce-help { font-size: 12px; line-height: 1.7; color: var(--muted); margin-top: 12px; word-break: keep-all; }
+.commerce-help a,.commerce-custom-notice a { text-decoration: underline; text-underline-offset: 3px; }
+.commerce-external { margin-top: 30px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.commerce-external-toggle { display: flex; justify-content: space-between; align-items: center; gap: 16px; width: 100%; padding: 20px 0; font-size: 14px; text-align: left; }
+.commerce-external-toggle > span { font-size: 20px; }
+#external-code-fields { padding: 0 0 24px; }
+#external-code-fields > .commerce-help:first-child { margin-top: 0; max-width: 520px; }
+.commerce-code-label { margin: 20px 0 6px; }
+.commerce-code-row { display: flex; align-items: center; gap: 10px; max-width: 460px; }
+.commerce-code-row > span { flex: none; font-size: 18px; }
+.commerce-code-row input { font-size: 20px !important; letter-spacing: .12em; }
+.commerce-code-row > button,.commerce-address-search > button { min-height: 46px; padding: 10px 20px; border: 1px solid var(--ink); flex: none; font-size: 14px; }
+.commerce-shipping > label { margin-top: 24px; }
+.commerce-address-search { display: flex; align-items: center; gap: 20px; max-width: 420px; }
+.commerce-address-search > button { white-space: nowrap; }
+.commerce-optional { color: var(--muted); margin-left: 7px; font-size: 12px; }
+.commerce-actions { display: flex; align-items: center; gap: 24px; margin-top: 30px; }
+.commerce-actions .commerce-primary { flex: 1; }
+.commerce-text-button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; flex: none; font-size: 14px; text-decoration: underline; text-underline-offset: 5px; }
+.commerce-summary { margin: 0; border-top: 1px solid var(--line); }
+.commerce-summary > div { display: grid; grid-template-columns: 120px 1fr; gap: 20px; padding: 15px 0; border-bottom: 1px solid var(--line); font-size: 14px; line-height: 1.65; }
+.commerce-summary dt { color: var(--muted); }
+.commerce-summary dd { min-width: 0; overflow-wrap: anywhere; }
+.commerce-summary .commerce-total { padding-block: 20px; }
+.commerce-total dd { font-size: 24px; }
+.commerce-total dt { align-self: center; color: var(--ink); }
+.commerce-consents { padding: 0; margin: 40px 0 0; border: 0; min-width: 0; }
+.commerce-consents legend { padding: 0; margin-bottom: 20px; font-size: 20px; letter-spacing: -.025em; }
+.commerce-custom-notice { border: 1px solid var(--line); padding: 20px; margin-bottom: 15px; background: #fff3; font-size: 13px; line-height: 1.75; word-break: keep-all; }
+.commerce-custom-notice p + p { margin-top: 8px; }
+.commerce-custom-notice a { display: inline-block; margin-top: 12px; font-size: 12px; }
+.commerce-consents label { display: flex; align-items: flex-start; gap: 10px; padding: 12px 0; font-size: 13px; line-height: 1.6; cursor: pointer; }
+.commerce-consents b { font-weight: 500; }
+.commerce-consents input[type=checkbox] { appearance: auto; flex: none; width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--ink); }
+.commerce-consent-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; border-top: 1px solid var(--line); }
+.commerce-consent-row > a { flex: none; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+.commerce-notice { margin-top: 24px; padding: 16px 18px; border-left: 2px solid var(--accent); background: #e7e6dc; font-size: 13px; line-height: 1.7; }
+.commerce-error { color: #a13b26; margin: 20px 0 0; font-size: 14px; line-height: 1.6; }
+.commerce-error[hidden] { display: none; }
+.commerce-connection-error { margin-top: 24px; font-size: 13px; color: #a13b26; }
+.commerce-connection-error button { text-decoration: underline; text-underline-offset: 4px; margin-top: 8px; padding-block: 8px; }
+.commerce-route-page { min-height: 70vh; max-width: 780px; padding: 72px var(--gutter) 100px; margin: auto; }
+.commerce-receipt h2,.commerce-return h1 { font-size: clamp(28px,3vw,40px); line-height: 1.3; letter-spacing: -.035em; margin-bottom: 18px; }
+.commerce-receipt > p:not(.commerce-kicker),.commerce-return > p:not(.commerce-kicker) { font-size: 15px; line-height: 1.7; }
+.commerce-receipt .commerce-summary { margin-top: 36px; }
+.commerce-reference { font-size: 12px !important; overflow-wrap: anywhere; letter-spacing: .015em; }
+.commerce-return .commerce-reference { margin-top: 24px; }
+.commerce-postcode-dialog { width: min(520px,calc(100vw - 32px)); max-height: calc(100dvh - 48px); padding: 20px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); margin: auto; }
+.commerce-postcode-dialog::backdrop { background: #18221dcc; }
+.commerce-postcode-heading { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-bottom: 14px; }
+.commerce-postcode-heading h4 { font-size: 18px; font-weight: 400; }
+.commerce-postcode-heading button { min-width: 44px; min-height: 44px; font-size: 13px; text-decoration: underline; text-underline-offset: 4px; }
+.commerce-postcode-container { width: 100%; height: min(480px,calc(100dvh - 160px)); min-height: 260px; }
+@media (max-width: 640px) {
+  .commerce-flow { margin-top: 34px; padding-top: 26px; }
+  .commerce-field-grid { grid-template-columns: 1fr; gap: 22px; }
+  .commerce-heading { margin-bottom: 24px; }
+  .commerce-summary > div { grid-template-columns: 85px 1fr; gap: 14px; font-size: 13px; }
+  .commerce-consent-row { gap: 10px; }
+  .commerce-consents label { font-size: 12px; }
+  .commerce-custom-notice { padding: 16px; }
+  .commerce-actions { gap: 20px; flex-wrap: wrap; }
+  .commerce-actions .commerce-primary { flex-basis: 100%; }
+  .commerce-primary { padding-inline: 18px; }
+  .commerce-route-page { padding-top: 48px; }
+  .commerce-code-row { gap: 8px; }
+  .commerce-code-row > button { padding-inline: 18px; }
+}

@@ -1,28 +1,30 @@
 # MNÉ
 
-Korean-language candle experience, built with React + Vite and a private Google Sheets order receiver through Netlify Functions.
+Korean candle storefront with React, Vite, Netlify Functions, private Netlify Blobs order/photo storage, and a Google Sheets operations mirror.
 
-## Local development
+## Development
 
-Use Node 22.13 or newer and pnpm 11.25. Run `pnpm install --frozen-lockfile`, `pnpm dev`, `pnpm test`, and `pnpm run build`.
-For local function integration use `npx netlify dev` with server-only environment variables configured. Plain Vite previews show the design but do not run the order API.
+Node 22.13+ and pnpm 11.25: `pnpm install --frozen-lockfile`, `pnpm dev`, `pnpm test`, `pnpm run build`.
+Plain Vite previews the design only. Use `npx netlify dev` with server-only environment variables for the API.
 
-## Netlify
+## Commerce
 
-Import `kjbis113-crypto/mne` from GitHub. `netlify.toml` sets the build command, publish directory, functions directory and `/order` routing. No ChatGPT sign-in or platform runtime is required.
+The flow collects a memory photo and description, scent choice, customer details, shipping, and three separate required consents. The server fixes the price at KRW 35,000 including shipping for the 120ml candle and three scent strips.
 
-Set `MNE_ORDER_WEBHOOK_URL` to the existing Google Apps Script `/exec` deployment and `MNE_ORDER_SECRET` to its matching Script Property, both in **Functions** scope. Do not put either value in the repository, client code, or a `VITE_` environment variable. Redeploy after setting them.
+`GET /api/commerce` returns public configuration. POST actions create and resume private orders, verify external prepaid codes, confirm TossPayments server-side, and return masked order lookup results. The old `/api/orders` intake returns 410 so unpaid submissions cannot bypass checkout.
 
-`GET /api/orders` reports configuration availability, not a completed delivery test. The API validates same-origin submissions, limits payloads, applies Netlify per-IP rate limiting and preserves the order reference across retries. Google Apps Script owns deduplication and writes order text as rich text to prevent formula injection. Customer data and uploaded photos remain private; the public archive is illustrative content only.
+Order records and photos are private in Netlify Blobs. Conditional writes prevent concurrent duplicate code claims and payment confirmation. A matching order ID, payment key, KRW amount, full balance, and confirmed payment status are required before a direct order enters fulfillment. Only live paid/prepaid orders are mirrored to Sheets. Test orders never reach Sheets or the fulfillment queue.
 
-Photos are limited to 4 MiB to allow multipart and Base64 overhead within Netlify's binary request limit. The intake uses file upload only; it does not show a duplicate photo URL field.
+External purchases use a phone-bound `MNÉ-` code issued by the operator with the existing delivery address. Customers enter it on the same order page and skip payment/address entry. Admin access uses a long server-configured token kept only in browser memory. SMS sending and refunds are manual; the admin page provides copyable messages and shipment updates, not automatic sending or refund execution.
 
-Before customer launch, submit one clearly labelled test order, verify its private spreadsheet row and photo, then retry the same reference to verify deduplication. MSE fragrance analysis is a separate integration and is not connected by this project.
+## Deployment and activation
 
-## Typography and assets
+GitHub `kjbis113-crypto/mne` deploys to the existing Netlify site through `netlify.toml`. Routes include `/order`, `/orders`, `/admin`, `/payment/*`, `/terms`, `/privacy`, and `/refund`.
 
-The active design system is `app/editorial.css`. Korean copy uses self-hosted Pretendard Variable under its accompanying SIL OFL license. Visitors do not need to install a font. No trial fonts are redistributed. Legacy stylesheet files are retained but are not imported.
+Set variables from `.env.example` in Netlify with Functions scope. Never commit real values. Keep `MNE_PAYMENT_ENABLED=false` until the matching Toss API keys are ready. Test keys permit test checkout; live checkout additionally requires `MNE_POLICIES_READY=true` and merchant details. Review the draft policy text and configure actual production/delivery terms before opening sales. Unprovided business details display as “등록 예정”.
 
-Copy is Korean-only; the legacy `Pair` component renders just its Korean text. Decorative section labels, duplicate translations, ordinals and empty analysis cards are removed. Body copy uses 160% leading, headings 124%, with a responsive scale and 20–48px outer gutters. The measured references (Arpa Studios and Köppen) informed the compact navigation, image-led hero, clear type hierarchy and consistent archive grid; their assets are not copied.
+The existing Apps Script URL and secret remain server-only. Sheets is an operations mirror; the private backend record is the source of truth. A failed Sheets write can be retried from the admin page without creating a new order. See [operations guide](docs/commerce-operations.md) for setup, limitations, testing and launch steps.
 
-Supplied MNÉ logo, photography, scroll-responsive architectural prints, SVG arrows and the compass camera interaction are retained. Reduced-motion preferences are respected. API payloads and private order handling are unchanged by the visual redesign.
+## Design
+
+The Korean-only design uses self-hosted Pretendard Variable with its SIL OFL license. No trial fonts are redistributed. Supplied MNÉ logo, campaign images, looping hero video, SVG arrows, compass, and reduced-motion support are retained. Uploaded customer memories never appear in the public illustrative archive. Automatic MSE fragrance analysis is not connected.

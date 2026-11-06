@@ -1,10 +1,12 @@
 "use client";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { makeOrderDraft, NOTE_VALUES, PROCESS_STEPS, type OrderDraft } from "./order-contract";
+import { NOTE_VALUES, PROCESS_STEPS } from "./order-contract";
 import {Dial} from './dial';
 import {Arrow, inlineArrows} from './arrow';
 import {ArchitecturalBackground} from './architectural-background';
 import {HeroFilm} from './hero-film';
+import {CommerceFlow} from './commerce-flow';
+import {CommerceFooter} from './commerce-pages';
 // Keep the existing copy contract, but present one Korean text block only.
 export function Pair({ko,className=''}:{en:string;ko:string;className?:string}){return <span className={'pair '+className}><span lang="ko">{inlineArrows(ko)}</span></span>;}
 const notes=[
@@ -60,11 +62,8 @@ function jump(id:string) {document.getElementById(id)?.scrollIntoView({behavior:
 export default function Home({orderPage=false}:{orderPage?:boolean}) {
   const [family,setFamily]=useState(0),[bearing,setBearing]=useState(0);
   const [photo,setPhoto]=useState(""),[memory,setMemory]=useState(""),[error,setError]=useState("");
-  const [customerName,setCustomerName]=useState(""),[contact,setContact]=useState("");
-  const [draft,setDraft]=useState<OrderDraft|null>(null);
-  const [photoFile,setPhotoFile]=useState<File|null>(null),[connected,setConnected]=useState(false),[submitting,setSubmitting]=useState(false);
-  const [receipt,setReceipt]=useState<{orderNumber:string;receivedAt:string}|null>(null),[submitError,setSubmitError]=useState("");
-  const orderNumber=useRef("");
+  const [photoFile,setPhotoFile]=useState<File|null>(null),[submitting,setSubmitting]=useState(false);
+  const advancedMemory=useRef("");
   const [records]=useState<MemoryRecord[]>(()=>samples.map((r,i)=>({...r,image:["/campaign-20261105-01.webp","/campaign-20261105-06.webp","/campaign-20261105-05.webp","/campaign-20261105-04.webp","/campaign-20261105-02.webp"][i]})));
   const [detail,setDetail]=useState<number|null>(null),[chapter,setChapter]=useState("home");
   const root=useRef<HTMLElement>(null),input=useRef<HTMLInputElement>(null),dialog=useRef<HTMLDialogElement>(null);
@@ -105,37 +104,24 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
     return()=>{observer.disconnect();watch.disconnect();window.removeEventListener("scroll",onScroll);cancelAnimationFrame(frame);};
   },[records.length]);
   useEffect(()=>()=>urls.current.forEach(url=>URL.revokeObjectURL(url)),[]);
-  useEffect(()=>{const controller=new AbortController();fetch('/api/orders',{signal:controller.signal}).then(r=>r.json()).then(data=>setConnected(data.connected===true)).catch(()=>{});return()=>controller.abort();},[]);
   useEffect(()=>{
     if(detail!==null){dialog.current?.showModal();dialog.current?.scrollTo(0,0);}
     else dialog.current?.close();
   },[detail]);
-  useEffect(()=>{setDraft(null);setReceipt(null);setSubmitError("");orderNumber.current="";},[photo,memory,family,customerName,contact]);
   function chooseImage(file?:File){
     if(!file)return;
     if(!["image/jpeg","image/png","image/webp","image/gif"].includes(file.type)){setError("Choose a JPG, PNG, WebP or GIF image.");return;}
     if(file.size>4*1024*1024){setError("Please choose an image smaller than 4 MB.");return;}
-    const url=URL.createObjectURL(file);urls.current.push(url);setPhoto(url);setPhotoFile(file);setError("");setDraft(null);
+    const url=URL.createObjectURL(file);urls.current.push(url);setPhoto(url);setPhotoFile(file);setError("");
   }
-  function example(){setPhoto("/campaign-20261105-06.webp");setPhotoFile(null);setMemory("저녁 공기에 섞인 소금기. 바다 사진 곁에서 일렁이던 촛불, 집에서 멀리 떠나왔다는 고요한 기분.");setError("");setDraft(null);}
-  function next(){if(!photo||!memory.trim()){setError("Bring a photograph and a few words before continuing.");return;}setError("");jump("scent");}
-  function prepareOrder(){
-    if(!photo){setError("Add a photograph.");jump("memory");return;}
-    try{setDraft(makeOrderDraft({photoLink:"",description:memory,preferredNote:recipe.name,customerName,contact}));setError("");requestAnimationFrame(()=>jump("order-review"));}
-    catch(cause){setError(cause instanceof Error?cause.message:"Check your order details.");jump("memory");}
+  function example(){setPhoto("/campaign-20261105-06.webp");setPhotoFile(null);setMemory("저녁 공기에 섞인 소금기. 바다 사진 곁에서 일렁이던 촛불, 집에서 멀리 떠나왔다는 고요한 기분.");setError("");}
+  function advanceMemory() {
+    if (!photoFile || !memory.trim() || advancedMemory.current === memory.trim()) return;
+    advancedMemory.current = memory.trim();
+    setError("");
+    requestAnimationFrame(()=>jump("scent"));
   }
-  async function submitOrder(){
-    if(!draft||!connected||submitting||receipt)return;
-    if(!photoFile){setSubmitError("Upload your own photograph. The sample image is for preview only.");return;}
-    setSubmitting(true);setSubmitError("");
-    orderNumber.current ||= 'MNE-'+crypto.randomUUID();
-    const form=new FormData();
-    form.set('orderNumber',orderNumber.current);form.set('description',draft['설명텍스트']);form.set('preferredNote',draft['선호노트']);form.set('customerName',draft['주문자']);form.set('contact',draft['연락처']);form.set('photoLink',draft['사진링크']);
-    if(photoFile)form.set('photo',photoFile);
-    try{const response=await fetch('/api/orders',{method:'POST',body:form});if(response.status===429)throw new Error('Please wait a minute before trying again.');const result=await response.json();if(!response.ok)throw new Error(result.error||'We could not confirm your order.');setReceipt(result);}
-    catch(cause){setSubmitError(cause instanceof Error?cause.message:'We could not confirm your order. Please retry.');}
-    finally{setSubmitting(false);}
-  }
+  function memoryError(message:string) { setError(message); jump("memory"); document.getElementById("memory-text")?.focus({preventScroll:true}); }
   return <main ref={root} className={"mne-experience chapter-"+chapter+(orderPage?" dedicated-order":"")}>
     <ArchitecturalBackground/>
     <div className="paper-grain" aria-hidden="true"/>
@@ -145,6 +131,7 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
       <nav className="fixed-nav" aria-label="주요 메뉴">
         <a href={orderPage?"/#about":"#about"} aria-current={chapter==='about'?'location':undefined}><Pair en="The idea" ko="소개"/></a>
         <a href={orderPage?"/#archive":"#archive"} aria-current={chapter==='archive'?'location':undefined}><Pair en="Archive" ko="아카이브"/></a>
+        <a href="/orders">주문 조회</a>
         <a className="nav-create" href="#memory" aria-current={['memory','scent','candle'].includes(chapter)?'location':undefined}><Pair en="Create" ko="향 만들기"/><Arrow/></a>
       </nav>
     </header>
@@ -191,33 +178,25 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
         </div>
         <div className="memory-fields" data-reveal>
           <label htmlFor="memory-text"><Pair en="What did it feel like?" ko="어떤 기분이었나요?"/></label>
-          <textarea id="memory-text" value={memory} placeholder="공기와 빛, 사진에 담기지 않은 것들을 들려주세요." onChange={e=>{setMemory(e.target.value);setDraft(null);}}/>
+          <textarea id="memory-text" value={memory} maxLength={5000} placeholder="공기와 빛, 사진에 담기지 않은 것들을 들려주세요." onChange={e=>{setMemory(e.target.value);setError("");}} onBlur={e=>{if(e.relatedTarget && document.getElementById('memory')?.contains(e.relatedTarget))return;advanceMemory();}} aria-describedby="memory-help"/>
           <div className="field-meta"><button onClick={example} ><Pair en="Try a sample memory" ko="예시 기억 불러오기"/></button><span>{memory.length}</span></div>
-          <div className="order-fields">
-            <label htmlFor="customer-name"><Pair en="Your name" ko="이름"/></label><input id="customer-name" autoComplete="name" value={customerName} onChange={e=>setCustomerName(e.target.value)} placeholder="이름" aria-required="true"/>
-            <label htmlFor="customer-contact"><Pair en="Email or phone" ko="이메일 또는 전화번호"/></label><input id="customer-contact" value={contact} onChange={e=>setContact(e.target.value)} placeholder="연락받을 이메일 또는 전화번호" aria-required="true"/>
-          </div>
-          {error&&<p role="alert" className="field-error"><Pair en={error} ko={errors[error]||"입력 내용을 확인한 뒤 다시 시도해 주세요."}/></p>}
-          <button className="text-link" onClick={next}><Pair en="Find its direction" ko="향의 방향 찾기"/><i><Arrow/></i></button>
-          <p className="fine-print"><Pair en={connected?"Nothing is sent until you submit your order.":"The connection is unavailable. Your details stay in this tab."} ko={connected?"주문 접수 전에는 정보가 전송되지 않습니다.":"현재 접수 연결을 사용할 수 없습니다. 입력한 정보는 이 탭에만 남아 있습니다."}/></p>
+          {error&&<p role="alert" className="field-error">{errors[error]||error}</p>}
+          <p id="memory-help" className="fine-print">사진과 글을 입력하고 입력창 밖을 누르면 향 선택으로 이어집니다. 주문을 확정하기 전에는 전송되지 않습니다.</p>
         </div>
       </div>
     </section>
 
-    <section id="scent" data-chapter="scent" className={"scent-section family-"+family} style={{"--scent-tone":recipe.color} as CSSProperties} inert={submitting}>
+    <section id="scent" data-chapter="scent" className={"scent-section family-"+family} style={{"--scent-tone":recipe.color} as CSSProperties}>
       <div className="scent-top section-pad" data-reveal><h2><Pair en="Follow the feeling." ko="어떤 향에 가까운가요?"/></h2></div>
       <div className="scent-workspace section-pad">
-      <div className="scent-compass-stage">
-        <InteractiveCompass value={family} labels={notes.map(note=>note.ko)} onChange={setFamily} label="향 나침반" onPoint={prepareOrder}/>
+      <div className="scent-compass-stage" inert={submitting}>
+        <InteractiveCompass value={family} labels={notes.map(note=>note.ko)} onChange={setFamily} label="향 나침반" onPoint={()=>jump("customer-order")}/>
         <p id="compass-instructions"><Pair en="Drag in a circle or choose a note" ko="나침반을 돌리거나 향 계열을 선택하세요."/></p>
       </div>
-      <div className="compass-note-list" aria-label="선호 향 계열">{families.map((f,i)=><button key={f.name} aria-pressed={family===i} onClick={()=>setFamily(i)}><Pair en={f.name} ko={notes[i].ko}/><span className="note-indicator" aria-hidden="true"/></button>)}</div>
+      <div className="compass-note-list" aria-label="선호 향 계열" inert={submitting}>{families.map((f,i)=><button key={f.name} aria-pressed={family===i} onClick={()=>setFamily(i)}><Pair en={f.name} ko={notes[i].ko}/><span className="note-indicator" aria-hidden="true"/></button>)}</div>
       <div className="scent-bottom">
         <div className="scent-description" key={family}><p><Pair en={recipe.description} ko={notes[family].translation}/></p></div>
-        <div className="scent-action">
-          <button className="text-link" onClick={prepareOrder}><Pair en="Review my order" ko="주문 확인하기"/><i><Arrow/></i></button>
-          <p className="fine-print"><Pair en="Your preference guides MSE. It is not a finished recipe." ko="선호 향 계열은 분석의 방향을 정하는 정보이며, 완성된 향 배합은 아닙니다."/></p>
-        </div>
+        <CommerceFlow photoFile={photoFile} description={memory} preferredNote={recipe.name} onMemoryError={memoryError} onBusyChange={setSubmitting}/>
       </div>
       </div>
     </section>
@@ -226,18 +205,8 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
       <div className="section-heading" data-reveal><h2><Pair en={"Find the one\nthat takes you back."} ko={"당신을 그때로\n데려다주는 향."} className="heading-line"/></h2></div>
       <div className="candle-grid">
         <div className="candle-visual" data-reveal><div className="product-photo"><img src="/campaign-20261105-03.webp" alt="마른 잎 아래 놓인 은색 MNÉ 향초" loading="lazy"/></div></div>
-        <div className="candle-copy" data-reveal><h3><Pair en={"One scent.\nEntirely yours."} ko={"오롯이\n당신만의 향."}/></h3><p><Pair en="Explore three scent strips. Choose the one that feels like your memory. We turn it into a candle, made for you." ko="세 가지 시향지를 경험하고, 당신의 기억과 가장 가까운 향을 골라 주세요. 그 향을 당신만의 향초로 완성합니다."/></p><div className="product-spec"><span>90 g / 3.1 oz</span><span>국내 수작업 제작</span></div><button className="text-link" onClick={()=>jump('memory')}><Pair en="Create your candle" ko="나만의 향초 만들기"/><i><Arrow/></i></button></div>
+        <div className="candle-copy" data-reveal><h3><Pair en={"One scent.\nEntirely yours."} ko={"오롯이\n당신만의 향."}/></h3><p><Pair en="Explore three scent strips. Choose the one that feels like your memory. We turn it into a candle, made for you." ko="세 가지 시향지를 경험하고, 당신의 기억과 가장 가까운 향을 골라 주세요. 그 향을 당신만의 향초로 완성합니다."/></p><div className="product-spec"><span>120ml · 35,000원 (배송비 포함)</span><span>국내 수작업 제작</span></div><button className="text-link" onClick={()=>jump('memory')}><Pair en="Create your candle" ko="나만의 향초 만들기"/><i><Arrow/></i></button></div>
       </div>
-      {(orderPage||draft)&&<div id="order-review" className="order-review">
-        <span className="draft-label"><Pair en={receipt?"Order recorded / awaiting analysis":draft?"Order draft / not submitted":"Your order / not yet prepared"} ko={receipt?"주문 접수됨 / 분석 대기":draft?"주문 초안 / 미접수":"주문 정보 / 입력 전"}/></span>
-        <h3><Pair en={draft?"A moment, ready to review.":"A memory has more than one direction."} ko={draft?"주문 정보를 확인해 주세요.":"하나의 기억, 여러 향의 방향."}/></h3>
-        <p><Pair en={receipt?"Your order is recorded. MSE fragrance analysis is not connected yet.":draft?"Review your details before submitting your order.":"Share your photograph, your words, and a preferred note. Three scent strips will help you choose a fragrance."} ko={receipt?"주문이 접수되었습니다. MSE 향 분석 기능은 아직 연결되지 않았습니다.":draft?"주문을 접수하기 전에 입력한 정보를 확인해 주세요.":"사진과 짧은 글, 선호하는 향 계열을 알려 주세요. 세 가지 시향지를 경험하고 향을 고르게 됩니다."}/></p>
-        {draft&&<><dl className="order-summary"><div><dt><Pair en="Preferred note" ko="선호 향 계열"/></dt><dd><Pair en={recipe.name} ko={notes[family].ko}/></dd></div><div><dt><Pair en="Customer" ko="이름"/></dt><dd>{draft["주문자"]}</dd></div><div><dt><Pair en="Contact" ko="연락처"/></dt><dd>{draft["연락처"]}</dd></div><div><dt><Pair en="Photo" ko="사진"/></dt><dd><Pair en={receipt?"Saved privately in Drive":photoFile?"Ready to upload":"Sample preview only"} ko={receipt?"Drive에 비공개로 저장됨":photoFile?"업로드 준비됨":"미리보기용 예시 사진"}/></dd></div><div><dt><Pair en="Memory" ko="기억"/></dt><dd className="original-memory">{draft["설명텍스트"]}</dd></div></dl><p className="fine-print"><Pair en={receipt?"MNÉ manages processing and recipe IDs separately.":"This draft has not been submitted. A receipt is issued after confirmed submission."} ko={receipt?"진행 상태와 향 배합 번호는 MNÉ가 별도로 관리합니다.":"이 초안은 아직 접수되지 않았습니다. 접수가 확인되면 주문 번호가 발급됩니다."}/></p></>}
-        {receipt&&<p role="status" className="order-receipt"><Pair en="Order recorded" ko="주문 접수됨"/><span>{receipt.orderNumber}</span><Pair en={"Received "+new Date(receipt.receivedAt).toLocaleString("en-GB",{timeZone:"Asia/Seoul"})+" (KST)"} ko={"접수 "+new Date(receipt.receivedAt).toLocaleString("ko-KR",{timeZone:"Asia/Seoul"})}/></p>}
-        {draft&&!receipt&&<><button className="text-link" disabled={!connected||submitting} onClick={submitOrder}><Pair en={submitting?"Recording your order…":connected?"Submit to MNÉ":"Connection unavailable"} ko={submitting?"주문 접수 중…":connected?"MNÉ에 주문 접수하기":"현재 접수 연결 불가"}/> <i><Arrow/></i></button><p className="fine-print"><Pair en="Submitting sends your name, contact details, memory, preferred note and photo to MNÉ’s private order sheet and Drive. They are never added to the public archive." ko="접수하면 이름, 연락처, 기억, 선호 향 계열과 사진이 MNÉ의 비공개 주문 시트와 Drive에 저장됩니다. 아카이브에는 공개되지 않습니다."/></p></>}
-        {submitError&&<p role="alert" className="field-error"><Pair en={submitError} ko={errors[submitError]||"접수하지 못했습니다. 입력 내용을 확인한 뒤 다시 시도해 주세요."}/></p>}
-        <button className="text-link" disabled={submitting} onClick={()=>jump("memory")}><Pair en={draft?"Edit order details":"Bring a memory"} ko={draft?"주문 정보 수정하기":"기억 가져오기"}/> <i><Arrow/></i></button>
-      </div>}
       <details className="process-details"><summary><Pair en="From your memory to your candle" ko="기억이 향초가 되는 과정"/><span aria-hidden="true">+</span></summary>
       <div className="journey-heading"><p><Pair en="Fragrance analysis is not connected yet." ko="현재 자동 향 분석 기능은 연결되지 않았습니다."/></p></div>
       <ol className="order-journey">{PROCESS_STEPS.map((step,i)=><li key={step.value}><span>0{i+1}</span><div><h4><Pair en={step.label} ko={step.value}/></h4><p><Pair en={step.description} ko={processKo[i]}/></p></div></li>)}</ol>
@@ -248,13 +217,15 @@ export default function Home({orderPage=false}:{orderPage?:boolean}) {
       <div className="archive-heading section-pad" data-reveal><h2><Pair en="Memory archive" ko="기억의 아카이브" className="heading-line"/></h2><p><Pair en="Step inside a memory." ko="서로 다른 삶에 남은 익숙한 감정들."/></p></div>
       <div className="archive-grid">{records.map((record,i)=><button key={record.title+i} className={"memory-card card-"+i%5} data-reveal onClick={()=>setDetail(i)}>
         <div className="card-label"><Pair en={record.title} ko={memories[i].titleKo}/></div>
-        <div className={"card-art art-"+record.family.toLowerCase()}>{record.image?<img src={record.image} alt={memories[i].titleKo} loading="lazy"/>:<span className="card-letter">{notes[memories[i].family].ko}</span>}<span className="card-view"><Pair en="ENTER MEMORY ↗" ko="기억 속으로 ↗"/></span><span className="card-family"><Pair en={record.family} ko={notes[memories[i].family].ko}/></span></div>
+        <div className={"card-art art-"+record.family.toLowerCase()}>{record.image?<img src={record.image} alt={memories[i].titleKo} loading="lazy"/>:<span className="card-letter">{notes[memories[i].family].ko}</span>}<span className="card-view"><Pair en="ENTER MEMORY" ko="기억 속으로"/><Arrow/></span><span className="card-family"><Pair en={record.family} ko={notes[memories[i].family].ko}/></span></div>
         <div className="card-meta"><Pair en={record.place} ko={memories[i].placeKo}/><Pair en={record.notes} ko={memories[i].notesKo}/></div>
       </button>)}</div>
       <p className="archive-caption section-pad"><Pair en="Illustrative scent stories. Private order details are never added to this archive." ko="향을 상상해 보는 예시 이야기입니다. 개인 주문 정보는 이 아카이브에 공개되지 않습니다."/></p>
     </section>
 
-    <section data-chapter="return" className="closing-section section-pad"><button className="closing-link" onClick={()=>jump("memory")}><Pair en="Make a memory tangible." ko={"당신의 기억을\n향으로 남겨 보세요."} className="heading-line"/><i><Arrow/></i></button><div className="closing-meta"><a href={orderPage?"/":"#home"}><Pair en="BACK TO THE BEGINNING ↑" ko="처음으로 ↑"/></a></div></section>
+    <section data-chapter="return" className="closing-section section-pad"><button className="closing-link" onClick={()=>jump("memory")}><Pair en="Make a memory tangible." ko={"당신의 기억을\n향으로 남겨 보세요."} className="heading-line"/><i><Arrow/></i></button><div className="closing-meta"><a href={orderPage?"/":"#home"}><Pair en="BACK TO THE BEGINNING" ko="처음으로"/><Arrow direction="up"/></a></div></section>
+
+    <CommerceFooter/>
 
     <dialog ref={dialog} className="memory-detail" aria-labelledby="detail-title" onCancel={()=>setDetail(null)} onClose={()=>setDetail(null)}>
       {selected&&<article style={{"--detail-color":selected.family==="Fresh"?"#cbdce0":selected.family==="Floral"?"#e4d8d4":selected.family==="Fruity"?"#decdb2":"#d5d6c8"} as CSSProperties}>
