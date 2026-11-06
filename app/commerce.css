@@ -47,6 +47,15 @@
 .commerce-custom-notice { border: 1px solid var(--line); padding: 20px; margin-bottom: 15px; background: #fff3; font-size: 13px; line-height: 1.75; word-break: keep-all; }
 .commerce-custom-notice p + p { margin-top: 8px; }
 .commerce-custom-notice a { display: inline-block; margin-top: 12px; font-size: 12px; }
+.commerce-privacy-notice { margin-top: 20px; }
+.commerce-privacy-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 12px; line-height: 1.65; text-align: left; word-break: keep-all; overflow-wrap: anywhere; }
+.commerce-privacy-table caption { padding-bottom: 12px; text-align: left; font-size: 14px; font-weight: 500; }
+.commerce-privacy-table th,.commerce-privacy-table td { padding: 12px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.commerce-privacy-table th { font-weight: 500; }
+.commerce-privacy-table thead th { border-top: 1px solid var(--line); background: #fff3; }
+.commerce-privacy-table thead th:last-child { width: 29%; }
+.commerce-privacy-notice > p { margin: 12px 0; font-size: 12px; line-height: 1.65; color: var(--muted); }
+.candle-copy .product-safety { margin: 12px 0 24px; font-size: 13px; line-height: 1.65; color: var(--muted); word-break: keep-all; }
 .commerce-consents label { display: flex; align-items: flex-start; gap: 10px; padding: 12px 0; font-size: 13px; line-height: 1.6; cursor: pointer; }
 .commerce-consents b { font-weight: 500; }
 .commerce-consents input[type=checkbox] { appearance: auto; flex: none; width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--ink); }

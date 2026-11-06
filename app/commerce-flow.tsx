@@ -118,6 +118,18 @@ function ConsentFields({ value, onChange, disabled }: { value: CommerceConsents;
   return <fieldset className="commerce-consents" disabled={disabled}><legend>주문 전 확인해 주세요.</legend>
     <div className="commerce-custom-notice"><p>이 향초는 고객님의 기억을 바탕으로 개별 제작됩니다. 사전에 안내하고 별도 동의를 받은 범위에서, 제작이 시작된 후에는 단순 변심에 따른 취소·환불이 제한될 수 있습니다.</p><p>단, 주문 내용과 다르게 제작되었거나 제품에 하자가 있는 경우에는 교환·환불해 드립니다.</p><a href="/refund" target="_blank" rel="noreferrer">취소·교환·환불 안내 보기 <span className="sr-only">새 창</span></a></div>
     <label><input type="checkbox" checked={value.customOrder} onChange={() => toggle('customOrder')} required/><span><b>[필수]</b> 개별 제작 및 청약철회 제한 안내를 확인하고 동의합니다.</span></label>
+    <div className="commerce-privacy-notice">
+      <table className="commerce-privacy-table">
+        <caption>개인정보 수집·이용 안내</caption>
+        <thead><tr><th scope="col">수집 항목</th><th scope="col">이용 목적</th><th scope="col">보유기간</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">이름·연락처</th><td>주문자 확인, 주문 진행 및 문의 안내</td><td rowSpan={3}>미정 · 주문 접수 전 확정 필요</td></tr>
+          <tr><th scope="row">수령인·연락처·배송지</th><td>시향지 및 향초 배송</td></tr>
+          <tr><th scope="row">사진·기억 글·선호 향</th><td>개인 맞춤 향초 제작</td></tr>
+        </tbody>
+      </table>
+      <p>필수 정보 수집·이용에 동의하지 않으면 주문 제작 및 배송을 진행할 수 없습니다.</p>
+    </div>
     <div className="commerce-consent-row"><label><input type="checkbox" checked={value.privacy} onChange={() => toggle('privacy')} required/><span><b>[필수]</b> 개인정보 수집·이용에 동의합니다.</span></label><a href="/privacy" target="_blank" rel="noreferrer">내용 보기<span className="sr-only"> 새 창</span></a></div>
     <div className="commerce-consent-row"><label><input type="checkbox" checked={value.terms} onChange={() => toggle('terms')} required/><span><b>[필수]</b> 이용약관에 동의합니다.</span></label><a href="/terms" target="_blank" rel="noreferrer">내용 보기<span className="sr-only"> 새 창</span></a></div>
     <label><input type="checkbox" checked={value.marketing} onChange={() => toggle('marketing')}/><span>[선택] 새로운 소식과 혜택 안내 수신에 동의합니다.</span></label>
